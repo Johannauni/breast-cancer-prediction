@@ -16,9 +16,10 @@
         </form>
 
         {% if result %}
-        <div class="alert mt-4 
-            {% if 'Gutartig' in result %}alert-success{% else %}alert-danger{% endif %}">
-            <h4>Ergebnis: {{ result }}</h4>
+        <div class="card mt-4 {% if 'Gutartig' in result %}ergebnis-gutartig{% else %}ergebnis-boesartig{% endif %}">
+            <div class="card-body">
+                <h4>Ergebnis: {{ result }}</h4>
+            </div>
         </div>
         {% endif %}
     </div>

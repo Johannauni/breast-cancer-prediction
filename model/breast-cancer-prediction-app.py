@@ -209,8 +209,6 @@ if __name__ =="__main__":
     plt.tight_layout()
     plt.show()
 
-
-
     # Nach dem Hyperparameter-Tuning, das beste Modell speichern
     w, mean_train, std_train = best_model_top7  # oder best_model_all, je nachdem welches besser war
 
@@ -218,7 +216,8 @@ if __name__ =="__main__":
         pickle.dump({
             "w": w,
             "mean_train": mean_train,
-            "std_train": std_train
+            "std_train": std_train,
+            "features": top_features
         }, f)
 
     print("Modell gespeichert!")
