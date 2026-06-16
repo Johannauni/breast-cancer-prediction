@@ -1,10 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Vorhersage</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-</body>
-</html>
+{% block content %}
+<div class="card shadow">
+    <div class="card-body">
+        <h2>Vorhersage</h2>
+        <form method="POST">
+            {% for feature in features %}
+            <div class="mb-3">
+                <label class="form-label">{{ feature }}</label>
+                <input type="number" step="any" class="form-control"
+                       name="{{ feature }}" required>
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-outline-secondary ms-2">Klassifizieren</button>
+        </form>
+
+        {% if result %}
+        <div class="alert mt-4 
+            {% if 'Gutartig' in result %}alert-success{% else %}alert-danger{% endif %}">
+            <h4>Ergebnis: {{ result }}</h4>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,10 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Verlauf</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-</body>
-</html>
+{% block content %}
+<h2>Verlauf</h2>
+
+{% if history %}
+<table class="table table-striped shadow">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Ergebnis</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in history %}
+        <tr class="{% if 'Gutartig' in entry.result %}table-success{% else %}table-danger{% endif %}">
+            <td>{{ loop.index }}</td>
+            <td>{{ entry.result }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="alert alert-info">
+    Noch keine Vorhersagen gemacht.
+</div>
+{% endif %}
+{% endblock %}

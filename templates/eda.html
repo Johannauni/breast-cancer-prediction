@@ -1,10 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>EDA</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-</body>
-</html>
+{% block content %}
+<h2>Deskriptive Datenanalyse</h2>
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <h5>Klassenverteilung</h5>
+        <img src="data:image/png;base64,{{ plot1 }}" class="img-fluid">
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <h5>Boxplots der wichtigsten Merkmale</h5>
+        <img src="data:image/png;base64,{{ plot2 }}" class="img-fluid">
+    </div>
+</div>
+{% endblock %}

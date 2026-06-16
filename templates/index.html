@@ -1,7 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Brustkrebs-Klassifizierung</h1>
-    <p>Willkommen! Diese App klassifiziert Befunde als gutartig oder bösartig.</p>
-    <a href="/predict">Zur Vorhersage</a>
+<div class="card shadow">
+    <div class="card-body">
+        <h1 class="card-title">Brustkrebs-Klassifizierung</h1>
+        <p class="card-text">
+            Diese App klassifiziert Brustkrebs-Befunde als gutartig oder bösartig
+            auf Basis eines selbst implementierten ML-Algorithmus (Gradient Descent).
+        </p>
+        <a href="/predict" class="btn btn-outline-secondary ms-2">Zur Vorhersage</a>
+        <a href="/eda" class="btn btn-outline-secondary ms-2">Datenanalyse</a>
+    </div>
+</div>
 {% endblock %}

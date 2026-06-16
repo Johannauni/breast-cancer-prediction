@@ -1,0 +1,34 @@
+/* Navbar */
+.navbar {
+    background-color: #C4848A !important;
+}
+
+.navbar-brand, .nav-link {
+    color: white !important;
+}
+
+.nav-link:hover {
+    color: #f0e0e0 !important;
+}
+
+/*Buttons */
+.btn-primary {
+    background-color: #C4848A !important;
+    border-color: #C4848A !important;
+    color: white !important;
+}
+
+.btn-primary:hover {
+    background-color: #b07078 !important;
+    border-color: #b07078 !important;
+}
+
+.btn-outline-secondary {
+    border-color: #C4848A !important;
+    color: #C4848A !important;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #C4848A !important;
+    color: white !important;
+}
