@@ -45,3 +45,7 @@
     border-color: #dc3545;
     color: #721c24;
 }
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f9eaea;
+}

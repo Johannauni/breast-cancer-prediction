@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-body">
+                <h2 class="card-title mb-4">Registrierung</h2>
+
+                {% if error %}
+                <div class="alert" style="background-color: #f9eaea; border-color: #C4848A;">
+                    {{ error }}
+                </div>
+                {% endif %}
+
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+                        <input type="text" class="form-control" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Passwort</label>
+                        <input type="password" class="form-control" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-rosa">Registrieren</button>
+                    <a href="/login" class="btn btn-outline-secondary ms-2">Bereits registriert?</a>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

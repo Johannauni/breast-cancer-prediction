@@ -8,6 +8,7 @@
     <thead>
         <tr>
             <th>#</th>
+            <th>Name</th>
             <th>Ergebnis</th>
         </tr>
     </thead>
@@ -15,14 +16,17 @@
         {% for entry in history %}
         <tr class="{% if 'Gutartig' in entry.result %}table-success{% else %}table-danger{% endif %}">
             <td>{{ loop.index }}</td>
-            <td>{{ entry.result }}</td>
+            <td>{{ entry.name }}</td>
+            <td>{{ entry.result if entry.result else "Noch keine Vorhersage" }}</td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
 {% else %}
-<div class="alert alert-info">
-    Noch keine Vorhersagen gemacht.
+<div class="alert d-flex align-items-center gap-2" style="background-color: #f9eaea; border-color: #C4848A;">
+    <span>Noch keine Vorhersagen gemacht.</span>
+    <a href="/predict" class="btn btn-rosa">Zur Vorhersage</a>
+    <a href="/patients" class="btn btn-rosa">Zur Patientenverwaltung</a>
 </div>
 {% endif %}
 {% endblock %}

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Patientenverwaltung</h2>
+
+{% if patients %}
+<table class="table table-striped shadow">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Ergebnis</th>
+            <th>Aktionen</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for patient in patients %}
+        <tr class="{% if patient.result and 'Gutartig' in patient.result %}table-success{% else %}table-danger{% endif %}">
+            <td>{{ patient.id }}</td>
+            <td>{{ patient.name }}</td>
+            <td>{{ patient.email }}</td>
+            <td>{{ patient.result if patient.result else "Noch keine Vorhersage" }}</td>
+            <td>
+                <a href="/patients/{{ patient.name }}" class="btn btn-sm btn-outline-secondary" target="_blank">JSON</a>
+                <button class="btn btn-sm btn-rosa" onclick="deletePatient('{{ patient.name }}')">Löschen</button>
+                <button class="btn btn-sm btn-outline-secondary" onclick="editPatient('{{ patient.name }}')">Bearbeiten</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="alert d-flex align-items-center gap-2" style="background-color: #f9eaea; border-color: #C4848A;">
+    <span>Noch keine Patienten vorhanden.</span>
+    <a href="/predict" class="btn btn-rosa">Zur Vorhersage</a>
+</div>
+{% endif %}
+
+<script>
+function deletePatient(name) {
+    if (confirm("Patient " + name + " wirklich löschen?")) {
+        fetch("/patients/" + name, {
+            method: "DELETE",
+            headers: {"Authorization": "{{ session.token }}"}
+        })
+        .then(() => location.reload());
+    }
+}
+
+function editPatient(name) {
+    let newName = prompt("Neuer Name für " + name + ":");
+    if (newName) {
+        fetch("/patients/" + name, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "{{ session.token }}"
+            },
+            body: JSON.stringify({"name": newName})
+        })
+        .then(() => location.reload());
+    }
+}
+</script>
+{% endblock %}

@@ -5,6 +5,10 @@
     <div class="card-body">
         <h2>Vorhersage</h2>
         <form method="POST">
+            <div class="mb-3">
+                <label class="form-label">Name des Patienten</label>
+                <input type="text" class="form-control" name="name" placeholder="z.B. Max Mustermann" required>
+            </div>
             {% for feature in features %}
             <div class="mb-3">
                 <label class="form-label">{{ feature }}</label>
