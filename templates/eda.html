@@ -6,14 +6,54 @@
 <div class="card shadow mb-4">
     <div class="card-body">
         <h5>Klassenverteilung</h5>
-        <img src="data:image/png;base64,{{ plot1 }}" class="img-fluid">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <img src="{{ url_for('static', filename='Figure_1_Klassenverteilung.png') }}" class="img-fluid">
+            </div>
+            <div class="col-md-6">
+                <p class="text-muted">
+                    Der Trainingsdatensatz enthält insgesamt 381 Zellen, davon 145 maligne und 236 benigne Befunde,
+                    was einer Klassenverteilung von etwa 38 % zu 62 % entspricht. Dies ist typisch für medizinische Datensätze
+                    und kann die Modellgenauigkeit beeinflussen.
+                    Insgesamt wurden zehn morphologische Merkmale,
+                    wie Radius, Fläche und Umfang, untersucht, die im Datensatz jeweils als Mittelwert,
+                    Standardabweichung sowie als Extremwert (Worst) hinterlegt sind.
+                </p>
+            </div>
+        </div>
     </div>
 </div>
 
 <div class="card shadow mb-4">
     <div class="card-body">
-        <h5>Boxplots der wichtigsten Merkmale</h5>
-        <img src="data:image/png;base64,{{ plot2 }}" class="img-fluid">
+        <h5>Boxplotanalyse</h5>
+        <p class="text-muted">
+            Die Boxplot-Analyse zeigt, dass benigne Zellen im Vergleich zu malignen Zellen überwiegend geringere
+            Streuungen sowie kleinere absolute Merkmalswerte aufweisen.
+            Insgesamt legen die Diagramme nahe, dass eine binäre Klassifikation auf Basis der vorliegenden
+            zellmorphologischen Merkmale vielversprechend ist.
+        </p>
+        <img src="{{ url_for('static', filename='Figure_2_Brustkrebs_feature Analyse.png') }}" class="img-fluid">
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <h5>Scatterplots der wichtigsten Merkmale</h5>
+        <p class="text-muted">
+            Die Scatterplots zeigen, dass gutartige und bösartige Befunde
+            bei den meisten Merkmalen gut trennbar sind, besonders bei
+            Radius Worst und concavity_mean. Auch die weiteren Streudiagramme zeigen ähnliche Muster,
+            wobei sich einige Merkmalskombinationen besser zur Trennung der Klassen eignen als andere.
+            Trotz dieser Unterschiede lässt sich bereits anhand der visuellen Analyse erkennen,
+            dass die malignen Zellen und die benignen Zellen im Merkmalsraum weitgehend linear voneinander trennbar sind.
+            Diese Beobachtung legt den Einsatz linearer Klassifikationsverfahren nahe.
+
+        </p>
+        <img src="{{ url_for('static', filename='Figure_3_Scatterplot.png') }}" class="img-fluid">
     </div>
 </div>
 {% endblock %}
+
+<img src=>
+<img src=>

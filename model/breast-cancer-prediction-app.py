@@ -22,7 +22,7 @@ def class_distribution(df_train):
     benign = (df_train["diagnosis"] == +1).sum()
     print(f"bösartig: {malignant}, gutartig: {benign}")
 
-    plt.bar(["Gutartig", "Bösartig"], [benign, malignant])
+    plt.bar(["Gutartig", "Bösartig"], [benign, malignant], color=["#C4848A", "#6A0572"])
     plt.title("Klassenverteilung")
     plt.show()
 
@@ -44,28 +44,41 @@ def compute_feature_statistics(df_train):
     print(av_texture)
 
 def compute_scatterplots(df_train):
-    #zusammenhang radius worst vs perimeter_mean
-    colors = df_train["diagnosis"].map({+1: "black", -1: "red"})
-    plt.scatter(df_train["radius_worst"], df_train["perimeter_mean"], c=colors)
-    plt.title("radius worst vs perimeter_mean")
-    plt.show()
+    colors = df_train["diagnosis"].map({+1: "#C4848A", -1: "#6A0572"})
 
-    #perimeter worst vs concave points worst
-    colors = df_train["diagnosis"].map({+1: "black", -1: "red"})
-    plt.scatter(df_train["perimeter_worst"], df_train["concave points_worst"], c=colors)
-    plt.title("perimeter worst vs concave points_worst")
-    plt.show()
+    fig, axes = plt.subplots(2, 2, figsize=(12, 12))
 
-    #radius worst vs concavity mean
-    colors = df_train["diagnosis"].map({+1: "black", -1: "red"})
-    plt.scatter(df_train["radius_worst"], df_train["concavity_mean"], c=colors)
-    plt.title("radius worst vs concavity mean")
-    plt.show()
+    # Plot 1
+    axes[0, 0].scatter(df_train["radius_worst"], df_train["perimeter_mean"], c=colors)
+    axes[0, 0].set_title("Radius Worst vs. Perimeter Mean")
+    axes[0, 0].set_xlabel("Radius Worst")
+    axes[0, 0].set_ylabel("Perimeter Mean")
 
-    #concavity_mean vs. fractal_dimension_mean
-    colors = df_train["diagnosis"].map({+1: "black", -1: "red"})
-    plt.scatter(df_train["concavity_mean"], df_train["fractal_dimension_mean"], c=colors)
-    plt.title("concavity_mean vs. fractal_dimension_mean")
+    # Plot 2
+    axes[0, 1].scatter(df_train["perimeter_worst"], df_train["concave points_worst"], c=colors)
+    axes[0, 1].set_title("Perimeter Worst vs. Concave Points Worst")
+    axes[0, 1].set_xlabel("Perimeter Worst")
+    axes[0, 1].set_ylabel("Concave Points Worst")
+
+    # Plot 3
+    axes[1, 0].scatter(df_train["radius_worst"], df_train["concavity_mean"], c=colors)
+    axes[1, 0].set_title("Radius Worst vs. Concavity Mean")
+    axes[1, 0].set_xlabel("Radius Worst")
+    axes[1, 0].set_ylabel("Concavity Mean")
+
+    # Plot 4
+    axes[1, 1].scatter(df_train["concavity_mean"], df_train["fractal_dimension_mean"], c=colors)
+    axes[1, 1].set_title("Concavity Mean vs. Fractal Dimension Mean")
+    axes[1, 1].set_xlabel("Concavity Mean")
+    axes[1, 1].set_ylabel("Fractal Dimension Mean")
+
+    # Legende
+    from matplotlib.patches import Patch
+    legend_elements = [Patch(facecolor="#C4848A", label="Gutartig"),
+                       Patch(facecolor="#6A0572", label="Bösartig")]
+    fig.legend(handles=legend_elements, loc="lower center", ncol=2, bbox_to_anchor=(0.5, 0.02))
+
+    plt.tight_layout()
     plt.show()
 
 def compute_correlation(df_train):
@@ -176,48 +189,48 @@ if __name__ =="__main__":
     compute_scatterplots(df_train)
 
     # 3. Modell mit Top-7 Features
-    print("Modell: Top-7 Features")
-    best_model_top7, best_acc_top7, best_param_top7, results_top7 = hyperparameter_tuning(df_train, df_valid, top_features)
+    #print("Modell: Top-7 Features")
+    #best_model_top7, best_acc_top7, best_param_top7, results_top7 = hyperparameter_tuning(df_train, df_valid, top_features)
 
     # Top-7 Heatmap
-    results_df_top7 = pd.DataFrame(results_top7, columns=["lr", "iterations", "accuracy"])
-    pivot_top7 = results_df_top7.pivot(index="lr", columns="iterations", values="accuracy")
+    #results_df_top7 = pd.DataFrame(results_top7, columns=["lr", "iterations", "accuracy"])
+   # pivot_top7 = results_df_top7.pivot(index="lr", columns="iterations", values="accuracy")
 
     # 4. Modell mit allen Features
-    all_features = df_train.drop(columns='diagnosis').columns.tolist()
-    print("Modell: Alle Features")
-    best_model_all, best_acc_all, best_param_all, results_all = hyperparameter_tuning(df_train, df_valid, all_features)
+    #all_features = df_train.drop(columns='diagnosis').columns.tolist()
+    #print("Modell: Alle Features")
+    #best_model_all, best_acc_all, best_param_all, results_all = hyperparameter_tuning(df_train, df_valid, all_features)
 
     # Alle Features Heatmap
-    results_df_all = pd.DataFrame(results_all, columns=["lr", "iterations", "accuracy"])
-    pivot_all = results_df_all.pivot(index="lr", columns="iterations", values="accuracy")
+    #results_df_all = pd.DataFrame(results_all, columns=["lr", "iterations", "accuracy"])
+    #pivot_all = results_df_all.pivot(index="lr", columns="iterations", values="accuracy")
 
     # 5. Vergleich
-    print(f"Top-7 Accuracy: {best_acc_top7:.4f}")
-    print(f"Alle Features Accuracy: {best_acc_all:.4f}")
-    print(f"Unterschied: {abs(best_acc_all - best_acc_top7):.4f}")
+    #print(f"Top-7 Accuracy: {best_acc_top7:.4f}")
+    #print(f"Alle Features Accuracy: {best_acc_all:.4f}")
+    #print(f"Unterschied: {abs(best_acc_all - best_acc_top7):.4f}")
 
     # Heatmaps nebeneinander darstellen
-    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+    #fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
-    sns.heatmap(pivot_top7, annot=True, fmt=".4f", cmap="viridis", ax=axes[0])
-    axes[0].set_title("Hyperparameter-Tuning: Top-7 Features")
+    #sns.heatmap(pivot_top7, annot=True, fmt=".4f", cmap="viridis", ax=axes[0])
+    #axes[0].set_title("Hyperparameter-Tuning: Top-7 Features")
 
-    sns.heatmap(pivot_all, annot=True, fmt=".4f", cmap="viridis", ax=axes[1])
-    axes[1].set_title("Hyperparameter-Tuning: Alle Features")
+    #sns.heatmap(pivot_all, annot=True, fmt=".4f", cmap="viridis", ax=axes[1])
+    #axes[1].set_title("Hyperparameter-Tuning: Alle Features")
 
-    plt.tight_layout()
-    plt.show()
+    #plt.tight_layout()
+    #plt.show()
 
     # Nach dem Hyperparameter-Tuning, das beste Modell speichern
-    w, mean_train, std_train = best_model_top7  # oder best_model_all, je nachdem welches besser war
+    #w, mean_train, std_train = best_model_top7  # oder best_model_all, je nachdem welches besser war
 
-    with open("model.pkl", "wb") as f:
-        pickle.dump({
-            "w": w,
-            "mean_train": mean_train,
-            "std_train": std_train,
-            "features": top_features
-        }, f)
+    #with open("model.pkl", "wb") as f:
+       # pickle.dump({
+       #     "w": w,
+       #     "mean_train": mean_train,
+       #     "std_train": std_train,
+        #    "features": top_features
+      #  }, f)
 
-    print("Modell gespeichert!")
+   # print("Modell gespeichert!")

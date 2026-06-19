@@ -2,12 +2,17 @@ from flask import Flask, json, jsonify, make_response, abort, render_template
 from flask import request
 import pickle
 import numpy as np
+import io
+import base64
+import matplotlib
+
+
 
 app = Flask(__name__)
 with open("model/model.pkl", "rb") as f: #Modell öffnen
     model_data = pickle.load(f)
 
-# Die drei gespeicherten Werte aus dem Modell holen
+# Die 4 gespeicherten Werte aus dem Modell holen
 w = model_data["w"]
 mean_train = model_data["mean_train"]
 std_train = model_data["std_train"]
@@ -42,6 +47,12 @@ def predict():
         history.append({"features": values, "result": result}) # speichern
     # result, features und values an das Template weitergeben
     return render_template("predict.html", result=result, features=features, values=values)
+
+def plot_to_base64(fig):
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png", bbox_inches="tight")
+    buf.seek(0)
+    return base64.b64encode(buf.getvalue()).decode()
 
 @app.route("/eda")
 def eda():
