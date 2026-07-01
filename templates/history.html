@@ -4,7 +4,7 @@
 <h2>Verlauf</h2>
 
 {% if history %}
-<table class="table table-striped shadow">
+<table class="table shadow patient-table">
     <thead>
         <tr>
             <th>#</th>
@@ -14,7 +14,7 @@
     </thead>
     <tbody>
         {% for entry in history %}
-        <tr class="{% if 'Gutartig' in entry.result %}table-success{% else %}table-danger{% endif %}">
+        <tr class="{% if 'Gutartig' in entry.result %}gutartig{% else %}boesartig{% endif %}">
             <td>{{ loop.index }}</td>
             <td>{{ entry.name }}</td>
             <td>{{ entry.result if entry.result else "Noch keine Vorhersage" }}</td>

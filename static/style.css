@@ -1,6 +1,6 @@
 /* Navbar */
 .navbar {
-    background-color: #C4848A !important;
+    background-color: #fac3d9 !important;
 }
 
 .navbar-brand, .nav-link {
@@ -14,38 +14,43 @@
 /*Buttons */
 .btn-primary {
     background-color: #C4848A !important;
-    border-color: #C4848A !important;
+    border-color: #fac3d9 !important;
     color: white !important;
 }
 
 .btn-primary:hover {
-    background-color: #b07078 !important;
+    background-color: #fac3d9 !important;
     border-color: #b07078 !important;
 }
 
 .btn-outline-secondary {
-    border-color: #C4848A !important;
-    color: #C4848A !important;
+    border-color: #fac3d9 !important;
+    color: #fac3d9 !important;
 }
 
 .btn-outline-secondary:hover {
-    background-color: #C4848A !important;
+    background-color: #fac3d9 !important;
     color: white !important;
 }
 
 /*Buttons für die Brustkrebsklassifizierung */
 .ergebnis-gutartig {
-    background-color: #d4edda;
-    border-color: #28a745;
-    color: #155724;
+    background-color: white;
+    border-color: #e880a9;
+    color: #e880a9;
 }
 
 .ergebnis-boesartig {
-    background-color: #f8d7da;
-    border-color: #dc3545;
-    color: #721c24;
+    background-color: #fadce8;
+    border-color: #ed0a3f;
+    color: #fffcfd;
 }
 
-.table-striped tbody tr:nth-of-type(odd) {
-    background-color: #f9eaea;
+tr.gutartig td {
+    background-color: white !important;
+}
+
+tr.boesartig td {
+    background-color: #fadce8 !important;
+    color: #333 !important;
 }

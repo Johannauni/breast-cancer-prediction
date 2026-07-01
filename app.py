@@ -3,8 +3,9 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from shared import app, db
-import PatientRepository as repo
+import UsersRepository as user_repo
 import BreastcancerRoutes
+
 
 def create_app():
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///patients.db"
@@ -15,5 +16,5 @@ def create_app():
 
 if __name__ == "__main__":
     create_app()
-    repo.init()
+    user_repo.init()
     app.run(debug=True)

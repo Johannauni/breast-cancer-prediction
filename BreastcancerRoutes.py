@@ -5,9 +5,11 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from flask import render_template, request, redirect, session, jsonify, make_response, abort, url_for, g
 from shared import app, db
 import PatientRepository as repo
+import UsersRepository as user_repo
 import jwt
 import pickle
 import numpy as np
+from auth import login_required
 
 # Modell laden
 with app.app_context():
@@ -34,18 +36,18 @@ def decode_token(request):
     token = request.headers["Authorization"]
     try:
         data = jwt.decode(token, app.config["SECRET_KEY"], algorithms=["HS256"])
-        patient = repo.get_patient_by_id(data['user_id'])
-        if not patient:
+        user = user_repo.get_user_by_id(data['user_id'])
+        if not user:
             abort(401)
-        return patient
+        return user
     except Exception:
         abort(500)
 
 # Nutzerobjekt vor jedem Request laden
 @app.before_request
 def load_user():
-    if session.get("patient_id") is not None:
-        g.user = repo.get_patient_by_id(session.get("patient_id"))
+    if session.get("user_id") is not None:
+        g.user = user_repo.get_user_by_id(session.get("user_id"))
     else:
         g.user = None
 
@@ -54,7 +56,7 @@ def index():
     return render_template("index.html")
 
 @app.route("/predict", methods=["GET", "POST"])
-@repo.login_required
+@login_required
 def predict():
     result = None
     values = {}
@@ -76,7 +78,7 @@ def predict():
         # Neuen Patienten mit Ergebnis speichern
         repo.add_patient_with_result(
             name=patient_name,
-            user_id=session["patient_id"],
+            user_id=session["user_id"],
             result=result
         )
 
@@ -90,7 +92,7 @@ def eda():
 def history_view():
     all_patients = repo.get_all_patients()
     # Nur die eigenen Patienten anzeigen
-    my_patients = [p for p in all_patients if p["user_id"] == session.get("patient_id")]
+    my_patients = [p for p in all_patients if p["user_id"] == session.get("user_id")]
     return render_template("history.html", history=my_patients)
 
 @app.route("/register", methods=["GET", "POST"])
@@ -99,9 +101,9 @@ def register():
         name = request.form["name"]
         email = request.form["email"]
         password = request.form["password"]
-        if repo.get_patient_by_email(email):
+        if user_repo.get_user_by_email(email):
             return render_template("register.html", error="Email bereits vergeben!")
-        repo.add_patient(name, email, password)
+        user_repo.add_user(name, email, password)
         return redirect("/login")
     return render_template("register.html")
 
@@ -110,16 +112,16 @@ def login():
     if request.method == "POST":
         email = request.form["email"]
         password = request.form["password"]
-        patient = repo.get_patient_by_email(email)
-        if not patient:
+        user = user_repo.get_user_by_email(email)
+        if not user:
             return render_template("login.html", error="Email nicht gefunden!")
         from werkzeug.security import check_password_hash
-        if not check_password_hash(patient.password, password):
+        if not check_password_hash(user.password, password):
             return render_template("login.html", error="Falsches Passwort!")
-        token = jwt.encode({"user_id": patient.id}, app.config["SECRET_KEY"], algorithm="HS256")
+        token = jwt.encode({"user_id": user.id}, app.config["SECRET_KEY"], algorithm="HS256")
         session["token"] = token
-        session["patient_name"] = patient.name
-        session["patient_id"] = patient.id
+        session["user_name"] = user.name
+        session["user_id"] = user.id
         return redirect("/predict")
     return render_template("login.html")
 
@@ -129,29 +131,48 @@ def logout():
     return redirect("/")
 
 @app.route("/patients", methods=["GET"])
-@repo.login_required
+@login_required
 def all_patients():
     patients = repo.get_all_patients()
     return render_template("patients.html", patients=patients)
 
-@app.route("/patients/<name>", methods=["GET"])
-def specific_patient(name):
-    decode_token(request)
-    patient = repo.get_patient_by_email(name)
+@app.route("/patients/<int:patient_id>")
+@login_required
+def specific_patient(patient_id):
+    patient = repo.get_patient_by_id(patient_id)
     if not patient:
         abort(404)
-    return jsonify({"id": patient.id, "name": patient.name, "email": patient.email, "result": patient.result})
+    return jsonify({
+        "id": patient.id,
+        "name": patient.name,
+        "result": patient.result
+    })
 
-@app.route("/patients/<name>", methods=["DELETE"])
-def delete_patient(name):
-    decode_token(request)
-    repo.delete_patient(name)
+@app.route("/patients/<int:patient_id>", methods=["DELETE"])
+@login_required
+def delete_patient(patient_id):
+    patient = repo.get_patient_by_id(patient_id)
+    if not patient:
+        abort(404)
+
+    if patient.user_id != session["user_id"]:
+        abort(403)
+    repo.delete_patient(patient_id)
+    print("DELETE ROUTE HIT:", patient_id)
     return make_response("", 200)
 
-@app.route("/patients/<name>", methods=["PUT"])
-def update_patient(name):
-    decode_token(request)
+@app.route("/patients/<int:patient_id>", methods=["PUT"])
+@login_required
+def update_patient(patient_id):
+    patient = repo.get_patient_by_id(patient_id)
+    if not patient:
+        abort(404)
+
+    if patient.user_id != session["user_id"]:
+        abort(403)
     data = request.get_json()
-    new_name = data.get("name", name)
-    repo.update_patient_name(name, new_name)
+    new_name = data.get("name", patient.name)
+
+    repo.update_patient_name(patient_id, new_name)
+
     return jsonify({"name": new_name})
